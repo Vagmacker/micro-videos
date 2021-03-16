@@ -40,10 +40,10 @@ class CategoryController extends Controller
      * Store a newly created resource in storage.
      *
      * @param CategoryRequest $request
-     * @return JsonResponse
+     * @return JsonResponse|Response
      * @throws Exception
      */
-    public function store(CategoryRequest $request): JsonResponse
+    public function store(CategoryRequest $request): JsonResponse|Response
     {
         $newCategory = $this->service->save($request->all());
         $resource = new CategoryResource($newCategory);
@@ -74,9 +74,10 @@ class CategoryController extends Controller
      */
     public function update(CategoryRequest $request, Category $category): JsonResponse|Response
     {
-        $this->service->update($request->all(), $category);
+        $category = $this->service->update($request->all(), $category);
+        $resource = new CategoryResource($category);
 
-        return $this->resource->response()->setStatusCode(Response::HTTP_OK);
+        return $resource->response()->setStatusCode(Response::HTTP_OK);
     }
 
     /**
@@ -86,10 +87,10 @@ class CategoryController extends Controller
      * @return JsonResponse|Response
      * @throws Exception
      */
-    public function destroy(Category $category): Response|JsonResponse
+    public function destroy(Category $category): JsonResponse|Response
     {
         $this->service->delete($category);
 
-        return $this->resource->response()->setStatusCode(Response::HTTP_NO_CONTENT);
+        return response()->json()->setStatusCode(Response::HTTP_NO_CONTENT);
     }
 }

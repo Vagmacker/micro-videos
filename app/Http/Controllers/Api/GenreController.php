@@ -4,23 +4,34 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\GenreRequest;
+use App\Http\Resources\GenreResource;
 use App\Models\Genre;
+use App\Services\GenreService;
 use Exception;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
 class GenreController extends Controller
 {
     /**
+     * GenreController constructor.
+     * @param GenreService $service
+     */
+    public function __construct(public GenreService $service)
+    {
+    }
+
+    /**
      * Display a listing of the resource.
      *
      * @return JsonResponse|Response
      */
-    public function index(): JsonResponse|Response
+    public function index(): Response|JsonResponse
     {
-        return response()
-            ->json(Genre::all())
+        $genres = $this->service->findAll();
+
+        return GenreResource::collection($genres)
+            ->response()
             ->setStatusCode(Response::HTTP_OK);
     }
 
@@ -28,52 +39,57 @@ class GenreController extends Controller
      * Store a newly created resource in storage.
      *
      * @param GenreRequest $request
-     * @return JsonResponse
+     * @return JsonResponse|Response
+     * @throws Exception
      */
-    public function store(GenreRequest $request): JsonResponse
+    public function store(GenreRequest $request): JsonResponse|Response
     {
-        return response()
-            ->json(Genre::create($request->all()))
-            ->setStatusCode(Response::HTTP_CREATED);
+        $newGenre = $this->service->save($request->all());
+        $resource = new GenreResource($newGenre);
+
+        return $resource->response()->setStatusCode(Response::HTTP_CREATED);
     }
 
     /**
      * Display the specified resource.
      *
      * @param Genre $genre
-     * @return JsonResponse
+     * @return JsonResponse|Response
      */
-    public function show(Genre $genre): JsonResponse
+    public function show(Genre $genre): JsonResponse|Response
     {
-        return response()
-            ->json($genre)
-            ->setStatusCode(Response::HTTP_OK);
+        $resource = new GenreResource($genre);
+
+        return $resource->response()->setStatusCode(Response::HTTP_OK);
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param Request $request
+     * @param GenreRequest $request
      * @param Genre $genre
-     * @return JsonResponse
+     * @return JsonResponse|Response
+     * @throws Exception
      */
-    public function update(Request $request, Genre $genre): JsonResponse
+    public function update(GenreRequest $request, Genre $genre): JsonResponse|Response
     {
-        return response()
-            ->json($genre->update($request->all()))
-            ->setStatusCode(Response::HTTP_OK);
+        $genre = $this->service->update($request->all(), $genre);
+        $resource = new GenreResource($genre);
+
+        return $resource->response()->setStatusCode(Response::HTTP_OK);
     }
 
     /**
      * Remove the specified resource from storage.
      *
      * @param Genre $genre
-     * @return Response
+     * @return JsonResponse|Response
      * @throws Exception
      */
-    public function destroy(Genre $genre): Response
+    public function destroy(Genre $genre): JsonResponse|Response
     {
-        $genre->delete();
-        return response()->noContent();
+        $this->service->delete($genre);
+
+        return response()->json()->setStatusCode(Response::HTTP_NO_CONTENT);
     }
 }

@@ -2,20 +2,20 @@
 
 namespace App\Services;
 
-use App\Models\Category;
-use App\Repositories\Eloquent\CategoryRepository;
+use App\Models\Genre;
+use App\Repositories\Eloquent\GenreRepository;
 use Exception;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 
-class CategoryService extends AbstractService
+class GenreService extends AbstractService
 {
-    public function __construct(public CategoryRepository $repository)
+    public function __construct(public GenreRepository $repository)
     {
     }
 
     /**
-     * Returns all registered categories in the system.
+     * Returns all registered genres in the system.
      */
     public function findAll(): Collection|array
     {
@@ -27,14 +27,14 @@ class CategoryService extends AbstractService
      * @return Model|null
      * @throws Exception
      */
-    public function save($attributes): Category|null
+    public function save($attributes): Genre|null
     {
-        $newCategory = null;
+        $newGenre = null;
 
         try {
             $this->beginTransaction();
 
-            $newCategory = $this->repository->create($attributes);
+            $newGenre = $this->repository->create($attributes);
 
             $this->commit();
         } catch (Exception $e) {
@@ -42,25 +42,25 @@ class CategoryService extends AbstractService
             throw $e;
         }
 
-        return $newCategory;
+        return $newGenre;
     }
 
     /**
-     * Update a specific category.
+     * Update a specific genre.
      *
      * @param $attributes
-     * @param $categoru
-     * @return Collection|Model
+     * @param $genre
+     * @return Collection|Genre
      * @throws Exception
      */
-    public function update($attributes, $categoru): Collection|Model
+    public function update($attributes, $genre): Collection|Genre
     {
-        $categoruUpdated = null;
+        $genreUpdated = null;
 
         try {
             $this->beginTransaction();
 
-            $categoruUpdated = $this->repository->updateById($categoru->id, $attributes);
+            $genreUpdated = $this->repository->updateById($genre->id, $attributes);
 
             $this->commit();
         } catch (Exception $e) {
@@ -68,21 +68,21 @@ class CategoryService extends AbstractService
             throw $e;
         }
 
-        return $categoruUpdated;
+        return $genreUpdated;
     }
 
     /**
-     * Delete a category.
+     * Delete a genre.
      *
-     * @param $category
+     * @param $genre
      * @throws Exception
      */
-    public function delete($category): void
+    public function delete($genre): void
     {
         try {
             $this->beginTransaction();
 
-            $this->repository->deleteById($category->id);
+            $this->repository->deleteById($genre->id);
 
             $this->commit();
         } catch (Exception $e) {

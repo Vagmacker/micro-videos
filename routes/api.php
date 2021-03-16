@@ -14,5 +14,6 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::apiResources([
-    'categories' => 'CategoryController'
+    'categories' => 'CategoryController',
+    'genres' => 'GenreController'
 ]);
