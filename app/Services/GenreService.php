@@ -36,6 +36,10 @@ class GenreService extends AbstractService
 
             $newGenre = $this->repository->create($attributes);
 
+            if (isset($attributes['categories_id'])) {
+                $newGenre->categories()->sync($attributes['categories_id']);
+            }
+
             $this->commit();
         } catch (Exception $e) {
             $this->rollback();
