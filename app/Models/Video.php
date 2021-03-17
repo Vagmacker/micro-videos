@@ -52,13 +52,6 @@ class Video extends Model
     protected $dates = ['deleted_at'];
 
     /**
-     * The storage format of the model's date columns.
-     *
-     * @var string
-     */
-    protected $dateFormat = 'd/m/Y';
-
-    /**
      * @return BelongsToMany
      */
     public function categories()
