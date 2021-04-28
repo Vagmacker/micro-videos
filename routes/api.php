@@ -13,7 +13,9 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::apiResources([
-    'categories' => 'CategoryController',
-    'genres' => 'GenreController'
-]);
+Route::group(['middleware' => 'auth:api'], function () {
+    Route::apiResources([
+        'categories' => 'CategoryController',
+        'genres' => 'GenreController'
+    ]);
+});

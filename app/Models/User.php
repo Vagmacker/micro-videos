@@ -2,42 +2,65 @@
 
 namespace App\Models;
 
-use Illuminate\Contracts\Auth\MustVerifyEmail;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
+use Exception;
+use Illuminate\Contracts\Auth\Authenticatable;
 
-class User extends Authenticatable
+/**
+ * Class User
+ * @package App\Models
+ */
+class User implements Authenticatable
 {
-    use HasFactory, Notifiable;
+    /**
+     * User constructor.
+     * @param string $id
+     * @param string $name
+     * @param string $email
+     * @param string $token
+     */
+    public function __construct(public string $id, public string $name, public string $email, public string $token)
+    {
+    }
+
+    public function getAuthIdentifierName()
+    {
+        return $this->email;
+    }
+
+    public function getAuthIdentifier()
+    {
+        return $this->id;
+    }
 
     /**
-     * The attributes that are mass assignable.
-     *
-     * @var array
+     * @throws Exception
      */
-    protected $fillable = [
-        'name',
-        'email',
-        'password',
-    ];
+    public function getAuthPassword()
+    {
+        throw new Exception('Not implemented');
+    }
 
     /**
-     * The attributes that should be hidden for arrays.
-     *
-     * @var array
+     * @throws Exception
      */
-    protected $hidden = [
-        'password',
-        'remember_token',
-    ];
+    public function getRememberToken()
+    {
+        throw new Exception('Not implemented');
+    }
 
     /**
-     * The attributes that should be cast to native types.
-     *
-     * @var array
+     * @throws Exception
      */
-    protected $casts = [
-        'email_verified_at' => 'datetime',
-    ];
+    public function setRememberToken($value)
+    {
+        throw new Exception('Not implemented');
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function getRememberTokenName()
+    {
+        throw new Exception('Not implemented');
+    }
 }
